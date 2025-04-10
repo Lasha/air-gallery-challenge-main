@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  images: {
+    unoptimized: true, // TODO: change this to false to enable Next's image optimization
+    domains: ["picsum.photos", "api.air.inc"],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

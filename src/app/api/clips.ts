@@ -71,13 +71,14 @@ export interface ClipsListResponse {
   };
 }
 
-const boardId = "c74bbbc8-602b-4c88-be71-9e21b36b0514";
 const shortId = "bDkBvnzpB";
 
 export const fetchAssets = ({
   cursor,
+  boardId = "c74bbbc8-602b-4c88-be71-9e21b36b0514",
 }: {
   cursor: string | null;
+  boardId?: string;
 }): Promise<ClipsListResponse> =>
   fetch(`https://api.air.inc/shorturl/${shortId}/clips/search`, {
     method: "post",
