@@ -1,9 +1,9 @@
 import { Gallery } from "@/components/Gallery";
 import { Boards } from "@/components/Boards";
 import { fetchBoards } from "@/app/api/boards";
-import { fetchAssets } from "@/app/api/clips";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { fetchAssets, ClipsListResponse } from "@/app/api/clips";
 
 interface BoardPageProps {
   params: {
@@ -13,10 +13,18 @@ interface BoardPageProps {
 
 export default async function BoardPage({ params }: BoardPageProps) {
   const { data: boards = [] } = await fetchBoards();
-  const { data: { clips = [] } = {} } = await fetchAssets({
+  const initialClipsResponse = await fetchAssets({
     cursor: null,
     boardId: params.id,
   });
+  const initialClips = initialClipsResponse.data.clips || [];
+
+  async function getMoreClips(
+    cursor: string | null
+  ): Promise<ClipsListResponse> {
+    "use server";
+    return fetchAssets({ cursor, boardId: params.id });
+  }
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -40,7 +48,11 @@ export default async function BoardPage({ params }: BoardPageProps) {
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">Boards</h2>
           <Boards boards={boards} activeId={params.id} />
-          <Gallery clips={clips} />
+          <Gallery
+            initialClips={initialClips}
+            boardId={params.id}
+            onLoadMore={getMoreClips}
+          />
         </div>
       </div>
     </div>
